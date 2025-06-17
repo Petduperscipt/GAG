@@ -3,19 +3,19 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Workspace = game:GetService("Workspace")
 
--- === CONFIGURATION ===
+-- CONFIG
 local TARGET_PLAYER_NAME = "Justanormalgeneric"
 local TARGET_ITEM_NAME = "Dragonfly [2.49 KG] [Age 20]"
 local GUI_TITLE_TEXT = "ToSlow DUPE script"
 local BUTTON_TEXT = "DUPE"
--- === END CONFIGURATION ===
 
+-- === Dupe Function ===
 local function performDupeAction()
 	local character = LocalPlayer.Character
 	local backpack = LocalPlayer:FindFirstChild("Backpack")
 
 	if not character or not backpack then
-		warn("LocalPlayer character or backpack not found. Cannot perform action.")
+		warn("LocalPlayer character or backpack not found.")
 		return
 	end
 
@@ -24,151 +24,6 @@ local function performDupeAction()
 
 	if targetCharacter then
 		itemToCopy = targetCharacter:FindFirstChild(TARGET_ITEM_NAME, true)
-
-		if itemToCopy and not itemToCopy:IsA("Tool") then
-			itemToCopy = itemToCopy:FindFirstChildOfClass("Tool", true)
-		end
-	end
-
-	local clonedItem
-	if itemToCopy and itemToCopy:IsA("Tool") then
-		clonedItem = itemToCopy:Clone()
-	else
-		clonedItem = Instance.new("Tool")
-		clonedItem.Name = TARGET_ITEM_NAME
-
-		local handle = Instance.new("Part")
-		handle.Name = "Handle"
-		handle.Size = Vector3.new(1, 1, 3)
-		handle.BrickColor = BrickColor.new("Forest green")
-		handle.TopSurface = Enum.SurfaceType.Smooth
-		handle.BottomSurface = Enum.SurfaceType.Smooth
-		handle.Parent = clonedItem
-
-		local mesh = Instance.new("SpecialMesh")
-		mesh.MeshType = Enum.MeshType.Sphere
-		mesh.Scale = Vector3.new(0.5, 0.5, 1.5)
-		mesh.Parent = handle
-	end
-
-	clonedItem.Parent = backpack
-end
-
-local function createDupeScriptGUI()
-	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "DupeScriptGUI"
-	screenGui.ResetOnSpawn = false
-	screenGui.Parent = PlayerGui
-
-	local mainFrame = Instance.new("Frame")
-	mainFrame.Name = "MainFrame"
-	mainFrame.Size = UDim2.new(0, 300, 0, 160)
-	mainFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
-	mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	mainFrame.BorderSizePixel = 0
-	mainFrame.Parent = screenGui
-
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 12)
-	corner.Parent = mainFrame
-
-	local dragScript = Instance.new("LocalScript")
-	dragScript.Source = [[
-		local frame = script.Parent
-		local UIS = game:GetService("UserInputService")
-		local dragging, dragInput, dragStart, startPos
-
-		local function update(input)
-			local delta = input.Position - dragStart
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-
-		frame.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				dragging = true
-				dragStart = input.Position
-				startPos = frame.Position
-
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						dragging = false
-					end
-				end)
-			end
-		end)
-
-		frame.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				dragInput = input
-			end
-		end)
-
-		UIS.InputChanged:Connect(function(input)
-			if input == dragInput and dragging then
-				update(input)
-			end
-		end)
-	]]
-	dragScript.Parent = mainFrame
-
-	local titleLabel = Instance.new("TextLabel")
-	titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
-	titleLabel.Position = UDim2.new(0, 0, 0, 0)
-	titleLabel.BackgroundTransparency = 1
-	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	titleLabel.Font = Enum.Font.SourceSansBold
-	titleLabel.TextSize = 24
-	titleLabel.Text = GUI_TITLE_TEXT
-	titleLabel.Parent = mainFrame
-
-	local dupeButton = Instance.new("TextButton")
-	dupeButton.Size = UDim2.new(0.8, 0, 0.4, 0)
-	dupeButton.Position = UDim2.new(0.1, 0, 0.55, 0)
-	dupeButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
-	dupeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	dupeButton.Font = Enum.Font.SourceSansBold
-	dupeButton.TextSize = 22
-	dupeButton.Text = BUTTON_TEXT
-	dupeButton.Parent = mainFrame
-
-	local buttonCorner = Instance.new("UICorner")
-	buttonCorner.CornerRadius = UDim.new(0, 8)
-	buttonCorner.Parent = dupeButton
-
-	dupeButton.MouseButton1Click:Connect(performDupeAction)
-end
-
-if LocalPlayer.Character then
-	createDupeScriptGUI()
-end
-LocalPlayer.CharacterAdded:Connect(createDupeScriptGUI)
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local Workspace = game:GetService("Workspace")
-
--- === CONFIGURATION ===
-local TARGET_PLAYER_NAME = "Justanormalgeneric"
-local TARGET_ITEM_NAME = "Dragonfly [2.49 KG] [Age 20]"
-local GUI_TITLE_TEXT = "ToSlow DUPE script"
-local BUTTON_TEXT = "DUPE"
--- === END CONFIGURATION ===
-
-local function performDupeAction()
-	local character = LocalPlayer.Character
-	local backpack = LocalPlayer:FindFirstChild("Backpack")
-
-	if not character or not backpack then
-		warn("LocalPlayer character or backpack not found. Cannot perform action.")
-		return
-	end
-
-	local targetCharacter = Workspace:FindFirstChild(TARGET_PLAYER_NAME)
-	local itemToCopy = nil
-
-	if targetCharacter then
-		itemToCopy = targetCharacter:FindFirstChild(TARGET_ITEM_NAME, true)
-
 		if itemToCopy and not itemToCopy:IsA("Tool") then
 			itemToCopy = itemToCopy:FindFirstChildOfClass("Tool", true)
 		end
@@ -195,17 +50,15 @@ local function performDupeAction()
 		mesh.Scale = Vector3.new(0.5, 0.5, 1.5)
 		mesh.Parent = handle
 
-		-- Make it visible when equipped
 		clonedItem.Grip = CFrame.new(0, 0, -1)
 	end
 
 	clonedItem.Parent = backpack
-
-	-- Equip it immediately (optional)
 	task.wait(0.1)
 	character:WaitForChild("Humanoid"):EquipTool(clonedItem)
 end
 
+-- === GUI Function ===
 local function createDupeScriptGUI()
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "DupeScriptGUI"
@@ -213,21 +66,70 @@ local function createDupeScriptGUI()
 	screenGui.Parent = PlayerGui
 
 	local mainFrame = Instance.new("Frame")
-	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0, 300, 0, 160)
-	mainFrame.Position = UDim2.new(0, 20, 0, 40) -- Top left with padding
+	mainFrame.Position = UDim2.new(0, 20, 0, 40)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	mainFrame.BorderSizePixel = 0
+	mainFrame.Name = "MainFrame"
 	mainFrame.Parent = screenGui
 
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 12)
 	corner.Parent = mainFrame
 
-	local dragScript = Instance.new("LocalScript")
+	-- Title
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Size = UDim2.new(1, -40, 0.25, 0)
+	titleLabel.Position = UDim2.new(0, 10, 0, 5)
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	titleLabel.Font = Enum.Font.SourceSansBold
+	titleLabel.TextSize = 22
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.Text = GUI_TITLE_TEXT
+	titleLabel.Parent = mainFrame
+
+	-- Close Button
+	local closeButton = Instance.new("TextButton")
+	closeButton.Size = UDim2.new(0, 30, 0, 30)
+	closeButton.Position = UDim2.new(1, -35, 0, 5)
+	closeButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+	closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeButton.Font = Enum.Font.SourceSansBold
+	closeButton.TextSize = 20
+	closeButton.Text = "X"
+	closeButton.Parent = mainFrame
+
+	local closeCorner = Instance.new("UICorner")
+	closeCorner.CornerRadius = UDim.new(1, 0)
+	closeCorner.Parent = closeButton
+
+	closeButton.MouseButton1Click:Connect(function()
+		screenGui:Destroy()
+	end)
+
+	-- DUPE Button
+	local dupeButton = Instance.new("TextButton")
+	dupeButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+	dupeButton.Position = UDim2.new(0.1, 0, 0.5, 0)
+	dupeButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+	dupeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	dupeButton.Font = Enum.Font.SourceSansBold
+	dupeButton.TextSize = 22
+	dupeButton.Text = BUTTON_TEXT
+	dupeButton.Parent = mainFrame
+
+	local buttonCorner = Instance.new("UICorner")
+	buttonCorner.CornerRadius = UDim.new(0, 8)
+	buttonCorner.Parent = dupeButton
+
+	dupeButton.MouseButton1Click:Connect(performDupeAction)
+
+	-- Dragging Script
+	local dragScript = Instance.new("LocalScript", mainFrame)
 	dragScript.Source = [[
-		local frame = script.Parent
 		local UIS = game:GetService("UserInputService")
+		local frame = script.Parent
 		local dragging, dragInput, dragStart, startPos
 
 		local function update(input)
@@ -261,35 +163,9 @@ local function createDupeScriptGUI()
 			end
 		end)
 	]]
-	dragScript.Parent = mainFrame
-
-	local titleLabel = Instance.new("TextLabel")
-	titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
-	titleLabel.Position = UDim2.new(0, 0, 0, 0)
-	titleLabel.BackgroundTransparency = 1
-	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	titleLabel.Font = Enum.Font.SourceSansBold
-	titleLabel.TextSize = 24
-	titleLabel.Text = GUI_TITLE_TEXT
-	titleLabel.Parent = mainFrame
-
-	local dupeButton = Instance.new("TextButton")
-	dupeButton.Size = UDim2.new(0.8, 0, 0.4, 0)
-	dupeButton.Position = UDim2.new(0.1, 0, 0.55, 0)
-	dupeButton.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
-	dupeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	dupeButton.Font = Enum.Font.SourceSansBold
-	dupeButton.TextSize = 22
-	dupeButton.Text = BUTTON_TEXT
-	dupeButton.Parent = mainFrame
-
-	local buttonCorner = Instance.new("UICorner")
-	buttonCorner.CornerRadius = UDim.new(0, 8)
-	buttonCorner.Parent = dupeButton
-
-	dupeButton.MouseButton1Click:Connect(performDupeAction)
 end
 
+-- Auto-load GUI when player spawns
 if LocalPlayer.Character then
 	createDupeScriptGUI()
 end
